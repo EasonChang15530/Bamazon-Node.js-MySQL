@@ -21,17 +21,15 @@ CREATE TABLE products(
 
 -- Populate this database with around 10 different products. (i.e. Insert "mock" data rows into this database and table).
 INSERT INTO products(product_name, department_name, price, stock_quantity)
-VALUES 
-("Avatar", "movies", 25, 300),
+VALUES ("Avatar", "movies", 25, 300),
 ("Harry Potter", "books", 90, 300),
-("Coca-Cola", "drinks", 12.5, 2000),
-("orange juice", "drinks", 15, 400),
+("Coca-Cola", "drinks", 12.5, 5),
+("orange juice", "drinks", 15, 3),
 ("fortune cookies", "foods", 1.25, 5000),
-("forks", "utensils", 5, 500),
-("chopsticks", "utensils", 3, 200); 
+("forks", "utensils", 5, 4),
+("chopsticks", "utensils", 3, 5); 
 
 INSERT INTO products(product_name, department_name)
-VALUES 
-("donuts", "foods"),
+VALUES ("donuts", "foods"),
 ("Once Upon a Time In Hollywood", "movies"),
 ("stockpot", "utensils"); 

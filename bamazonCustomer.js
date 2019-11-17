@@ -21,12 +21,12 @@ connection.connect(function (error) {
 
 // In promptUser function
 function promptUser() {
-  connection.query('SELECT * FROM products', function (error, results) {
+  connection.query('SELECT * FROM products', function (error, results1) {
     if (error) throw error;
-    // console.log(results);
+    // console.log(results1);
     // Display the available products with their ID #s
-    for (let i = 0; i < results.length; i++) {
-      console.log(results[i].item_id + " - " + results[i].product_name + " - " + results[i].department_name + " - " + results[i].price + " - " + results[i].stock_quantity);
+    for (let i = 0; i < results1.length; i++) {
+      console.log(results1[i].item_id + " - " + results1[i].product_name + " - " + results1[i].department_name + " - " + results1[i].price + " - " + results1[i].stock_quantity);
     }
     inquirer.prompt(
       [
@@ -55,12 +55,12 @@ function promptUser() {
         [{
           item_id: answer.whichBuy
         }],
-        function (error, results) {
+        function (error, results2) {
           if (error) throw error;
           // Once we get a response from the database, check if the length of the response is greater than 0
-          console.log(results);
-          var new_stock_quantity = results[0].stock_quantity - answer.howManyBuy;
-          var unit_price = results[0].price;
+          console.log(results2);
+          var new_stock_quantity = results2[0].stock_quantity - answer.howManyBuy;
+          var unit_price = results2[0].price;
           if (new_stock_quantity < 0) {
             // Console log the response to check that it's working
             // If it's not, tell the user the item doesn't exist and call the promptUser function again
@@ -68,22 +68,21 @@ function promptUser() {
             purchase();
             return;
           }
-          // If there are enough in stock, calculate what the new quantity will be by subtracting the user's purchase quantity from the current quantity (store this value in a variable)
-  
-          // query the database to update the quantity using UPDATE quantity to new quantity where ID is the ID that the user chose
+          // If there are enough in stock, calculate what the new quantity will be by subtracting the user's purchase quantity from the current quantity.
+          // query the database to update the quantity using UPDATE quantity to new quantity where ID is the ID that the user chose.
           connection.query("UPDATE products SET ? WHERE ?",
             [
               { stock_quantity: new_stock_quantity },
               { item_id: answer.whichBuy }
-            ], function (error, results) {
+            ], function (error, results3) {
               if (error) throw error;
               // Tell the user their purchase was successful, and tell them how much they paid
               // multiply the quantity by the price of the product
-              console.log(new_stock_quantity); // How to console.log new row have changed
-              console.log(results.affectedRows + " products updated!\n");
+              console.log("this product remains: " + new_stock_quantity + "\n"); 
+              console.log(results3.affectedRows + " products updated!\n");
               
-              console.log("Total is: " + unit_price * answer.howManyBuy); // unit price
-              //  call promptUser again
+              console.log("Total is: " + unit_price * answer.howManyBuy + " dollars!\n");
+              // call promptUser again
               promptUser();
             }
           );
