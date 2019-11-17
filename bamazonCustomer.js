@@ -4,7 +4,8 @@ var dotenv = require("dotenv").config();
 var mysql = require("mysql");
 // run "npm i inquirer" 
 var inquirer = require("inquirer")
-
+// connect to database
+// test if the connection works, if it does, run promptUser function
 var connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
@@ -15,23 +16,20 @@ var connection = mysql.createConnection({
 connection.connect(function (error) {
   if (error) throw error;
   console.log("connected as id " + connection.threadId + "\n");
-  queryAllProducts();
-  purchase();
+  promptUser();
 });
-// Running this application will first display all of the items available for sale. Include the ids, names, and prices of products for sale.
-function queryAllProducts() {
+
+// In promptUser function
+function promptUser() {
   connection.query('SELECT * FROM products', function (error, results) {
     if (error) throw error;
     // console.log(results);
+    // Display the available products with their ID #s
     for (let i = 0; i < results.length; i++) {
       console.log(results[i].item_id + " - " + results[i].product_name + " - " + results[i].department_name + " - " + results[i].price + " - " + results[i].stock_quantity);
     }
   });
-};
-// The app should then prompt users with two messages.
-function purchase() {
-  //    * The first should ask them the ID of the product they would like to buy.
-  //    * The second message should ask how many units of the product they would like to buy.
+  // Use inquirer to ask the user for the ID # of the product they want
   inquirer.prompt(
     [
       {
@@ -46,42 +44,48 @@ function purchase() {
       },
     ]
   ).then(function (answer) {
-    var new_stock_quantity = stock_quantity - answer.howManyBuy;
-    var sql = ("UPDATE products SET ? WHERE ?",
-      [
-        { stock_quantity: new_stock_quantity },
-        { item_id: answer.whichBuy }
-      ]);
-    connection.query(sql, function (err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + " products updated!\n");
-    }
-    );
-  })
-}
-    //   if (answer.whichBuy === "1") {
-    //   connection.query('SELECT * FROM products WHERE?',
-    //     { "item_id": answer.whichBuy },
-    //     function (error, results) {
-    //       if (error) throw error;
-    //       console.log(results);
-    //       connection.end();
-    //     })
-    // }
+    // if their response is "Q" or "q", connection.end();
+    // if ((answer.whichBuy === "Q" || "q" ) || (answer.howManyBuy === "Q" || "q")) {
+    if (answer.whichBuy.toLowerCase() === "q" || answer.howManyBuy.toLowerCase() === "q") {
+      connection.end();
+      console.log("Exiting application");
+      return; //break?
+    };
+    // else Query the database to check if the ID # corresponds to an existing ID # in the products table
+    // select * from products where id = userResponse
+    connection.query("SELECT * FROM products WHERE ?",
+      [{
+        item_id: answer.whichBuy
+      }],
+      function (error, results) {
+        if (error) throw error;
+        // Once we get a response from the database, check if the length of the response is greater than 0
+        var new_stock_quantity = results[0].stock_quantity - answer.howManyBuy;
+        if (new_stock_quantity < 0) {
+          // Console log the response to check that it's working
+          // If it's not, tell the user the item doesn't exist and call the promptUser function again
+          console.log("Not enough supplies");
+          purchase();
+          return;
+        }
+        // If there are enough in stock, calculate what the new quantity will be by subtracting the user's purchase quantity from the current quantity (store this value in a variable)
 
-    // Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
-
-    //    * If not, the app should log a phrase like `Insufficient quantity!`, and then prevent the order from going through.
-
-    // if (answer.whichBuy === "Q" || "q") {
-    //   connection.end();
-    // } else if (answer.howManyBuy === "Q" || "q") {
-    //   connection.end();
-    // } else if (answer.howManyBuy < num) {
-
-    // }
-
-
-    // However, if your store _does_ have enough of the product, you should fulfill the customer's order.
-    //    * This means updating the SQL database to reflect the remaining quantity.
-    //    * Once the update goes through, show the customer the total cost of their purchase.
+        // query the database to update the quantity using UPDATE quantity to new quantity where ID is the ID that the user chose
+        connection.query("UPDATE products SET ? WHERE ?",
+          [
+            { stock_quantity: new_stock_quantity },
+            { item_id: answer.whichBuy }
+          ], function (error, results) {
+            if (error) throw error;
+            // Tell the user their purchase was successful, and tell them how much they paid
+            // multiply the quantity by the price of the product
+            console.log(results); // How to console.log new row have changed
+            console.log(results.affectedRows + " products updated!\n");
+            console.log("Total is: " + "unit price" * answer.howManyBuy); // unit price
+            connection.end();
+          }
+        );
+      })
+  });
+};
+//  call promptUser again
