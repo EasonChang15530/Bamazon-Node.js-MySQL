@@ -3,7 +3,7 @@ DROP DATABASE IF EXISTS bamazon_db;
 CREATE DATABASE bamazon_db;
 USE bamazon_db;
 
--- Then create a Table inside of that database called `products`.
+-- Create a Table inside of that database called `products`.
 CREATE TABLE products(
   -- The products table should have each of the following columns:
   --    * item_id (unique id for each product)
@@ -33,3 +33,23 @@ INSERT INTO products(product_name, department_name)
 VALUES ("donuts", "foods"),
 ("Once Upon a Time In Hollywood", "movies"),
 ("stockpot", "utensils"); 
+
+-- The following content is used for challenge 3:
+-- Create a new MySQL table called `departments`. 
+CREATE TABLE departments(
+-- The table should include the following columns:
+--    * department_id
+  department_id INT AUTO_INCREMENT NOT NULL,
+--    * department_name
+  department_name VARCHAR(20) NOT NULL,
+--    * over_head_costs (A dummy number you set for each department)
+  over_head_costs INT(6) NOT NULL,
+  PRIMARY KEY(department_id)
+);
+
+INSERT INTO departments(department_name, over_head_costs)
+VALUES ("movies", 50),
+("books", 10),
+("drinks", 30),
+("foods", 40),
+("utensils", 20);
