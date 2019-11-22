@@ -66,7 +66,7 @@ function promptUser() {
             // Console log the response to check that it's working
             // If it's not, tell the user the item doesn't exist and call the promptUser function again
             console.log("Not enough supplies");
-            purchase();
+            promptUser();
             return;
           }
           // If there are enough in stock, calculate what the new quantity will be by subtracting the user's purchase quantity from the current quantity.
