@@ -44,8 +44,10 @@ function promptSupervisor() {
           addNewDepartment();
           break;
 
-        default: // Note: Set Exit?
-          break;
+        // Note: Set Exit?
+        // default: 
+        //   connection.end();
+        //   break;
       }
     });
 }
@@ -55,14 +57,14 @@ function promptSupervisor() {
 // | 01            | Electronics     | 10000           | 20000         | 10000        |
 // | 02            | Clothing        | 60000           | 100000        | 40000        |
 function viewProductSales() {
-  connection.query('SELECT * FROM departments', function (error, results1) {
+  connection.query('SELECT * FROM departments INNER JOIN products ON departments.department_name = products.department_name', function (error, results1) {
     if (error) throw error;
     // console.log(results1);
     // Display the available departments with their ID #s
     for (let i = 0; i < results1.length; i++) {
       // Note: The `total_profit` column should be calculated on the fly using the difference between `over_head_costs` and `product_sales`. `total_profit` should not be stored in any database. You should use a custom alias.
-      console.log(results1[i].department_id + " - " + results1[i].department_name + " - " + results1[i].over_head_costs)
-      // Note: How to handle + " - " + product_sales + " - " + total_profit
+      var total_profit = results1[i].product_sales - results1[i].over_head_costs;
+      console.log(results1[i].department_id + " - " + results1[i].department_name + " - " + results1[i].over_head_costs + " - " + results1[i].product_sales + " - " + total_profit);
     };
     promptSupervisor();
   })

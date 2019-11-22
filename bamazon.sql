@@ -16,6 +16,8 @@ CREATE TABLE products(
   price DECIMAL(10,2),
   --    * stock_quantity (how much of the product is available in stores)
   stock_quantity INT,
+  --    * product_sales (for Challenge 3)
+  product_sales DECIMAL(10,2) DEFAULT 0,
   PRIMARY KEY(item_id)
 );
 

@@ -27,6 +27,7 @@ function promptUser() {
     // Display the available products with their ID #s
     for (let i = 0; i < results1.length; i++) {
       console.log(results1[i].item_id + " - " + results1[i].product_name + " - " + results1[i].department_name + " - " + results1[i].price + " - " + results1[i].stock_quantity);
+      //  + " - " + results1[i].product_sales);
     }
     inquirer.prompt(
       [
@@ -70,10 +71,14 @@ function promptUser() {
           }
           // If there are enough in stock, calculate what the new quantity will be by subtracting the user's purchase quantity from the current quantity.
           // query the database to update the quantity using UPDATE quantity to new quantity where ID is the ID that the user chose.
+          var new_product_sales = results2[0].product_sales + (unit_price * answer.howManyBuy);
           connection.query("UPDATE products SET ? WHERE ?",
             [
-              { stock_quantity: new_stock_quantity },
-              { item_id: answer.whichBuy }
+              // { stock_quantity: new_stock_quantity },
+              { stock_quantity: new_stock_quantity, product_sales: new_product_sales},
+              // { product_sales: unit_price * answer.howManyBuy},
+              { item_id: answer.whichBuy },
+            
             ], function (error, results3) {
               if (error) throw error;
               // Tell the user their purchase was successful, and tell them how much they paid
