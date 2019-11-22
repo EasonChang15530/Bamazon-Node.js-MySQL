@@ -1,5 +1,7 @@
 # Bamazon-Node.js-MySQL
 
+Demo link: https://drive.google.com/file/d/1BBbJUecwIXCCDVKEOSROg4wz9hr-ScZp/view?usp=sharing
+
 This app uses nodejs and mysql, including 3 applications.
 
 1. For `bamazonCustomer.js`. Running this application will display all of the items available for sale. Include the ids, names, department name, prices of products for sale, and stock quantities.
